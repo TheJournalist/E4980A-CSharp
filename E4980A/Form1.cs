@@ -88,29 +88,30 @@ namespace E4980A
 
                 char[] ans;
 
-                /// Continuos measurement/TRIG
-                for (int i = 0; i < nudSamples.Value; i++)
+                /// Write to local file
+                using (StreamWriter writer = new StreamWriter(tbFilePath.Text + "\\" + tbFilename.Text + ".csv", true))
                 {
-                    timer.Restart();
-                    DateTime foo = DateTime.Now;
-                    long unixTime = ((DateTimeOffset)foo).ToUnixTimeSeconds();
-                    session.FormattedIO.WriteLine("*TRG");
-                    ans = session.FormattedIO.ReadLine().ToCharArray();
-
-                    timer.Stop();
-
-                    timeTaken = timer.Elapsed;
-                    string time = "Time taken: " + timeTaken.ToString(@"m\:ss\.ffffff");
-                    string s = new string(ans);
-                    s = s.Replace(",+0,+0", "");
-
-                    /// Write to local file
-                    using (StreamWriter writer = new StreamWriter(tbFilePath.Text + "\\" + tbFilename.Text + ".csv", true))
+                    /// Continuos measurement/TRIG
+                    for (int i = 0; i < nudSamples.Value; i++)
                     {
+                        timer.Restart();
+                        DateTime foo = DateTime.Now;
+                        long unixTime = ((DateTimeOffset)foo).ToUnixTimeSeconds();
+                        session.FormattedIO.WriteLine("*TRG");
+                        ans = session.FormattedIO.ReadLine().ToCharArray();
+
+                        timer.Stop();
+
+                        timeTaken = timer.Elapsed;
+                        string time = "Time taken: " + timeTaken.ToString(@"m\:ss\.ffffff");
+                        string s = new string(ans);
+                        s = s.Replace(",+0,+0", "");
+
+
                         if (firstLine)
                         {
                             string fs = "timestamp, ";
-                            foreach(var f in frq)
+                            foreach (var f in frq)
                             {
                                 fs += f.ToString() + ", ";
                                 fs += f.ToString() + ", ";
@@ -121,34 +122,34 @@ namespace E4980A
                             fs = fs.Trim().TrimEnd(',');
                             writer.WriteLine(header);
                             writer.WriteLine(fs);
-                            
+
                             firstLine = false;
                         }
 
                         string sline = "";
                         List<string> splitResult = s.Split(',').ToList();
                         List<double> result = splitResult.Select(x => double.Parse(x)).ToList();
-                        for (int j = 0; j < frq.Length; j++) 
+                        for (int j = 0; j < frq.Length; j++)
                         {
                             double R = result[j * 2];
                             double X = result[j * 2 + 1];
-                            double mag = Math.Sqrt(Math.Pow(R,2) + Math.Pow(X,2));
+                            double mag = Math.Sqrt(Math.Pow(R, 2) + Math.Pow(X, 2));
                             double ph = (180 / Math.PI) * Math.Atan2(X, R);
                             sline += R.ToString() + ", " + X.ToString() + ", " + mag.ToString() + ", " + ph.ToString() + ", ";
                         }
 
                         sline = sline.Trim().TrimEnd(',');
 
-                        writer.Write(unixTime.ToString() + ", " + sline);
+                        writer.WriteLine(unixTime.ToString() + ", " + sline);
+
+
+                        /// Print in textbox
+                        BeginInvoke(new Action(() =>
+                        {
+                            richTextBox1.Text += DateTime.Now.ToString() + " - Measurement number " + i.ToString() + "\r\n" + time + "\r\n" + unixTime.ToString() + ", " + s + "\r\n";
+                        }));
+                        Console.WriteLine(time);
                     }
-
-                    /// Print in textbox
-                    BeginInvoke(new Action(() =>
-                    {
-                        richTextBox1.Text += DateTime.Now.ToString() + " - Measurement number " + i.ToString() + "\r\n" + time + "\r\n" + unixTime.ToString() + ", " + s + "\r\n";
-                    }));
-                    Console.WriteLine(time);
-
 
 
                     /*

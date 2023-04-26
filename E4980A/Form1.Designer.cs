@@ -31,37 +31,37 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.rbLog = new System.Windows.Forms.RadioButton();
-            this.rbLinear = new System.Windows.Forms.RadioButton();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.rbShort = new System.Windows.Forms.RadioButton();
-            this.rbMedium = new System.Windows.Forms.RadioButton();
-            this.rbLong = new System.Windows.Forms.RadioButton();
-            this.nudStart = new System.Windows.Forms.NumericUpDown();
-            this.nudEnd = new System.Windows.Forms.NumericUpDown();
             this.nudN = new System.Windows.Forms.NumericUpDown();
+            this.nudEnd = new System.Windows.Forms.NumericUpDown();
+            this.nudStart = new System.Windows.Forms.NumericUpDown();
+            this.rbLinear = new System.Windows.Forms.RadioButton();
+            this.rbLog = new System.Windows.Forms.RadioButton();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.nudSamples = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.rbLong = new System.Windows.Forms.RadioButton();
+            this.rbMedium = new System.Windows.Forms.RadioButton();
+            this.rbShort = new System.Windows.Forms.RadioButton();
             this.btnStart = new System.Windows.Forms.Button();
             this.tbDevice = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tbFlist = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.nudSamples = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.tbFilename = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.tbFilePath = new System.Windows.Forms.TextBox();
             this.btnPath = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudStart)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudN)).BeginInit();
-            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEnd)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStart)).BeginInit();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSamples)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.SuspendLayout();
@@ -95,123 +95,23 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Frequency";
             // 
-            // label1
+            // nudN
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(23, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Start";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(23, 48);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(26, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "End";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 74);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "N. points";
-            // 
-            // rbLog
-            // 
-            this.rbLog.AutoSize = true;
-            this.rbLog.Checked = true;
-            this.rbLog.Location = new System.Drawing.Point(26, 97);
-            this.rbLog.Name = "rbLog";
-            this.rbLog.Size = new System.Drawing.Size(39, 17);
-            this.rbLog.TabIndex = 7;
-            this.rbLog.TabStop = true;
-            this.rbLog.Text = "log";
-            this.rbLog.UseVisualStyleBackColor = true;
-            this.rbLog.CheckedChanged += new System.EventHandler(this.rbLinear_CheckedChanged);
-            // 
-            // rbLinear
-            // 
-            this.rbLinear.AutoSize = true;
-            this.rbLinear.Location = new System.Drawing.Point(81, 97);
-            this.rbLinear.Name = "rbLinear";
-            this.rbLinear.Size = new System.Drawing.Size(50, 17);
-            this.rbLinear.TabIndex = 8;
-            this.rbLinear.Text = "linear";
-            this.rbLinear.UseVisualStyleBackColor = true;
-            this.rbLinear.CheckedChanged += new System.EventHandler(this.rbLinear_CheckedChanged);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.nudSamples);
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.rbLong);
-            this.groupBox2.Controls.Add(this.rbMedium);
-            this.groupBox2.Controls.Add(this.rbShort);
-            this.groupBox2.Location = new System.Drawing.Point(160, 45);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(136, 123);
-            this.groupBox2.TabIndex = 3;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Sampling Time";
-            // 
-            // rbShort
-            // 
-            this.rbShort.AutoSize = true;
-            this.rbShort.Checked = true;
-            this.rbShort.Location = new System.Drawing.Point(25, 22);
-            this.rbShort.Name = "rbShort";
-            this.rbShort.Size = new System.Drawing.Size(50, 17);
-            this.rbShort.TabIndex = 9;
-            this.rbShort.TabStop = true;
-            this.rbShort.Text = "Short";
-            this.rbShort.UseVisualStyleBackColor = true;
-            // 
-            // rbMedium
-            // 
-            this.rbMedium.AutoSize = true;
-            this.rbMedium.Location = new System.Drawing.Point(25, 48);
-            this.rbMedium.Name = "rbMedium";
-            this.rbMedium.Size = new System.Drawing.Size(62, 17);
-            this.rbMedium.TabIndex = 10;
-            this.rbMedium.Text = "Medium";
-            this.rbMedium.UseVisualStyleBackColor = true;
-            // 
-            // rbLong
-            // 
-            this.rbLong.AutoSize = true;
-            this.rbLong.Location = new System.Drawing.Point(25, 72);
-            this.rbLong.Name = "rbLong";
-            this.rbLong.Size = new System.Drawing.Size(49, 17);
-            this.rbLong.TabIndex = 11;
-            this.rbLong.Text = "Long";
-            this.rbLong.UseVisualStyleBackColor = true;
-            // 
-            // nudStart
-            // 
-            this.nudStart.Location = new System.Drawing.Point(55, 19);
-            this.nudStart.Minimum = new decimal(new int[] {
-            20,
+            this.nudN.Location = new System.Drawing.Point(78, 71);
+            this.nudN.Minimum = new decimal(new int[] {
+            2,
             0,
             0,
             0});
-            this.nudStart.Name = "nudStart";
-            this.nudStart.Size = new System.Drawing.Size(76, 20);
-            this.nudStart.TabIndex = 4;
-            this.nudStart.Value = new decimal(new int[] {
-            20,
+            this.nudN.Name = "nudN";
+            this.nudN.Size = new System.Drawing.Size(53, 20);
+            this.nudN.TabIndex = 10;
+            this.nudN.Value = new decimal(new int[] {
+            50,
             0,
             0,
             0});
-            this.nudStart.ValueChanged += new System.EventHandler(this.nudStart_ValueChanged);
+            this.nudN.ValueChanged += new System.EventHandler(this.nudStart_ValueChanged);
             // 
             // nudEnd
             // 
@@ -231,23 +131,155 @@
             0});
             this.nudEnd.ValueChanged += new System.EventHandler(this.nudStart_ValueChanged);
             // 
-            // nudN
+            // nudStart
             // 
-            this.nudN.Location = new System.Drawing.Point(78, 71);
-            this.nudN.Minimum = new decimal(new int[] {
-            2,
+            this.nudStart.Location = new System.Drawing.Point(55, 19);
+            this.nudStart.Minimum = new decimal(new int[] {
+            20,
             0,
             0,
             0});
-            this.nudN.Name = "nudN";
-            this.nudN.Size = new System.Drawing.Size(53, 20);
-            this.nudN.TabIndex = 10;
-            this.nudN.Value = new decimal(new int[] {
-            50,
+            this.nudStart.Name = "nudStart";
+            this.nudStart.Size = new System.Drawing.Size(76, 20);
+            this.nudStart.TabIndex = 4;
+            this.nudStart.Value = new decimal(new int[] {
+            20,
             0,
             0,
             0});
-            this.nudN.ValueChanged += new System.EventHandler(this.nudStart_ValueChanged);
+            this.nudStart.ValueChanged += new System.EventHandler(this.nudStart_ValueChanged);
+            // 
+            // rbLinear
+            // 
+            this.rbLinear.AutoSize = true;
+            this.rbLinear.Location = new System.Drawing.Point(81, 97);
+            this.rbLinear.Name = "rbLinear";
+            this.rbLinear.Size = new System.Drawing.Size(50, 17);
+            this.rbLinear.TabIndex = 8;
+            this.rbLinear.Text = "linear";
+            this.rbLinear.UseVisualStyleBackColor = true;
+            this.rbLinear.CheckedChanged += new System.EventHandler(this.rbLinear_CheckedChanged);
+            // 
+            // rbLog
+            // 
+            this.rbLog.AutoSize = true;
+            this.rbLog.Checked = true;
+            this.rbLog.Location = new System.Drawing.Point(26, 97);
+            this.rbLog.Name = "rbLog";
+            this.rbLog.Size = new System.Drawing.Size(39, 17);
+            this.rbLog.TabIndex = 7;
+            this.rbLog.TabStop = true;
+            this.rbLog.Text = "log";
+            this.rbLog.UseVisualStyleBackColor = true;
+            this.rbLog.CheckedChanged += new System.EventHandler(this.rbLinear_CheckedChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(23, 74);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "N. points";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(23, 48);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(26, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "End";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(23, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Start";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.nudSamples);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.rbLong);
+            this.groupBox2.Controls.Add(this.rbMedium);
+            this.groupBox2.Controls.Add(this.rbShort);
+            this.groupBox2.Location = new System.Drawing.Point(160, 45);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(136, 123);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Sampling Time";
+            // 
+            // nudSamples
+            // 
+            this.nudSamples.Location = new System.Drawing.Point(77, 96);
+            this.nudSamples.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.nudSamples.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSamples.Name = "nudSamples";
+            this.nudSamples.Size = new System.Drawing.Size(53, 20);
+            this.nudSamples.TabIndex = 12;
+            this.nudSamples.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(12, 98);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(59, 13);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "N. samples";
+            // 
+            // rbLong
+            // 
+            this.rbLong.AutoSize = true;
+            this.rbLong.Location = new System.Drawing.Point(25, 72);
+            this.rbLong.Name = "rbLong";
+            this.rbLong.Size = new System.Drawing.Size(49, 17);
+            this.rbLong.TabIndex = 11;
+            this.rbLong.Text = "Long";
+            this.rbLong.UseVisualStyleBackColor = true;
+            // 
+            // rbMedium
+            // 
+            this.rbMedium.AutoSize = true;
+            this.rbMedium.Location = new System.Drawing.Point(25, 48);
+            this.rbMedium.Name = "rbMedium";
+            this.rbMedium.Size = new System.Drawing.Size(62, 17);
+            this.rbMedium.TabIndex = 10;
+            this.rbMedium.Text = "Medium";
+            this.rbMedium.UseVisualStyleBackColor = true;
+            // 
+            // rbShort
+            // 
+            this.rbShort.AutoSize = true;
+            this.rbShort.Checked = true;
+            this.rbShort.Location = new System.Drawing.Point(25, 22);
+            this.rbShort.Name = "rbShort";
+            this.rbShort.Size = new System.Drawing.Size(50, 17);
+            this.rbShort.TabIndex = 9;
+            this.rbShort.TabStop = true;
+            this.rbShort.Text = "Short";
+            this.rbShort.UseVisualStyleBackColor = true;
             // 
             // btnStart
             // 
@@ -294,33 +326,6 @@
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Frequency List";
-            // 
-            // nudSamples
-            // 
-            this.nudSamples.Location = new System.Drawing.Point(77, 96);
-            this.nudSamples.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudSamples.Name = "nudSamples";
-            this.nudSamples.Size = new System.Drawing.Size(53, 20);
-            this.nudSamples.TabIndex = 12;
-            this.nudSamples.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 98);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "N. samples";
             // 
             // groupBox4
             // 
@@ -392,14 +397,14 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudN)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEnd)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStart)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudStart)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudEnd)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudN)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSamples)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSamples)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
