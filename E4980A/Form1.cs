@@ -30,7 +30,7 @@ namespace E4980A
                 session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x2A8D::0x2F01::MY46620088::0::INSTR");
                 //session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x0957::0x0909::MY46204796::0::INSTR");
                 //session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("TCPIP0::10.12.2.93::inst0::INSTR");
-                session.TimeoutMilliseconds = 60000;
+                session.TimeoutMilliseconds = 600000;
                 session.FormattedIO.WriteLine("*IDN?");
                 string idName = session.FormattedIO.ReadLine();
 
@@ -44,9 +44,13 @@ namespace E4980A
                 session.FormattedIO.WriteLine("DISP:PAGE LIST");
 
                 /// Sampling time
-                session.FormattedIO.WriteLine("APER SHOR,1");
-                //session.FormattedIO.WriteLine("APER MED,1");
-                //session.FormattedIO.WriteLine("APER LONG,1");
+                if(rbLong.Checked)
+                    session.FormattedIO.WriteLine("APER LONG,1");
+                else if(rbMedium.Checked)
+                    session.FormattedIO.WriteLine("APER MED,1");
+                else
+                    session.FormattedIO.WriteLine("APER SHORT,1");
+                
 
                 session.FormattedIO.WriteLine("LIST:CLE:ALL");
 
@@ -96,7 +100,7 @@ namespace E4980A
                     {
                         timer.Restart();
                         DateTime foo = DateTime.Now;
-                        long unixTime = ((DateTimeOffset)foo).ToUnixTimeSeconds();
+                        long unixTime = ((DateTimeOffset)foo).ToUnixTimeMilliseconds();
                         session.FormattedIO.WriteLine("*TRG");
                         ans = session.FormattedIO.ReadLine().ToCharArray();
 
