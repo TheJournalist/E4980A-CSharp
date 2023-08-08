@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Globalization;
 
 namespace E4980A
 {
@@ -23,11 +24,11 @@ namespace E4980A
         {
             try
             {
-                var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x2A8D::0x2F01::MY46620088::0::INSTR");
+                var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open(tbDevice.Text);
                 //var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x0957::0x0909::MY46204796::0::INSTR");
                 //var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("TCPIP0::10.12.2.93::inst0::INSTR");
                 session.Clear();
-                session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x2A8D::0x2F01::MY46620088::0::INSTR");
+                session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open(tbDevice.Text);
                 //session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x0957::0x0909::MY46204796::0::INSTR");
                 //session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("TCPIP0::10.12.2.93::inst0::INSTR");
                 session.TimeoutMilliseconds = 600000;
@@ -308,6 +309,8 @@ namespace E4980A
 
         public Form1()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
             InitializeComponent();
 
             InitializeSavedValues();
