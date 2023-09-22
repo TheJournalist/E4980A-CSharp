@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbManual = new System.Windows.Forms.RadioButton();
             this.nudN = new System.Windows.Forms.NumericUpDown();
             this.nudEnd = new System.Windows.Forms.NumericUpDown();
             this.nudStart = new System.Windows.Forms.NumericUpDown();
@@ -55,6 +56,11 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.tbFilePath = new System.Windows.Forms.TextBox();
             this.btnPath = new System.Windows.Forms.Button();
+            this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
+            this.btnOp = new System.Windows.Forms.Button();
+            this.btnCalib = new System.Windows.Forms.Button();
+            this.cbCalib = new System.Windows.Forms.CheckBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudN)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEnd)).BeginInit();
@@ -64,14 +70,15 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(12, 329);
+            this.richTextBox1.Location = new System.Drawing.Point(15, 371);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(380, 147);
+            this.richTextBox1.Size = new System.Drawing.Size(407, 147);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             this.richTextBox1.WordWrap = false;
@@ -79,6 +86,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbManual);
             this.groupBox1.Controls.Add(this.nudN);
             this.groupBox1.Controls.Add(this.nudEnd);
             this.groupBox1.Controls.Add(this.nudStart);
@@ -90,14 +98,24 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 45);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(142, 123);
+            this.groupBox1.Size = new System.Drawing.Size(142, 179);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Frequency";
             // 
+            // rbManual
+            // 
+            this.rbManual.AutoSize = true;
+            this.rbManual.Location = new System.Drawing.Point(18, 152);
+            this.rbManual.Name = "rbManual";
+            this.rbManual.Size = new System.Drawing.Size(59, 17);
+            this.rbManual.TabIndex = 11;
+            this.rbManual.Text = "manual";
+            this.rbManual.UseVisualStyleBackColor = true;
+            // 
             // nudN
             // 
-            this.nudN.Location = new System.Drawing.Point(78, 71);
+            this.nudN.Location = new System.Drawing.Point(70, 78);
             this.nudN.Minimum = new decimal(new int[] {
             2,
             0,
@@ -107,7 +125,7 @@
             this.nudN.Size = new System.Drawing.Size(53, 20);
             this.nudN.TabIndex = 10;
             this.nudN.Value = new decimal(new int[] {
-            50,
+            5,
             0,
             0,
             0});
@@ -115,7 +133,7 @@
             // 
             // nudEnd
             // 
-            this.nudEnd.Location = new System.Drawing.Point(55, 46);
+            this.nudEnd.Location = new System.Drawing.Point(47, 53);
             this.nudEnd.Maximum = new decimal(new int[] {
             2000000,
             0,
@@ -125,7 +143,7 @@
             this.nudEnd.Size = new System.Drawing.Size(76, 20);
             this.nudEnd.TabIndex = 9;
             this.nudEnd.Value = new decimal(new int[] {
-            2000000,
+            1000000,
             0,
             0,
             0});
@@ -133,7 +151,12 @@
             // 
             // nudStart
             // 
-            this.nudStart.Location = new System.Drawing.Point(55, 19);
+            this.nudStart.Location = new System.Drawing.Point(47, 26);
+            this.nudStart.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.nudStart.Minimum = new decimal(new int[] {
             20,
             0,
@@ -143,7 +166,7 @@
             this.nudStart.Size = new System.Drawing.Size(76, 20);
             this.nudStart.TabIndex = 4;
             this.nudStart.Value = new decimal(new int[] {
-            20,
+            100,
             0,
             0,
             0});
@@ -152,7 +175,7 @@
             // rbLinear
             // 
             this.rbLinear.AutoSize = true;
-            this.rbLinear.Location = new System.Drawing.Point(81, 97);
+            this.rbLinear.Location = new System.Drawing.Point(18, 129);
             this.rbLinear.Name = "rbLinear";
             this.rbLinear.Size = new System.Drawing.Size(50, 17);
             this.rbLinear.TabIndex = 8;
@@ -164,7 +187,7 @@
             // 
             this.rbLog.AutoSize = true;
             this.rbLog.Checked = true;
-            this.rbLog.Location = new System.Drawing.Point(26, 97);
+            this.rbLog.Location = new System.Drawing.Point(18, 106);
             this.rbLog.Name = "rbLog";
             this.rbLog.Size = new System.Drawing.Size(39, 17);
             this.rbLog.TabIndex = 7;
@@ -177,7 +200,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 74);
+            this.label3.Location = new System.Drawing.Point(15, 81);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(49, 13);
             this.label3.TabIndex = 6;
@@ -187,7 +210,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(23, 48);
+            this.label2.Location = new System.Drawing.Point(15, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(26, 13);
             this.label2.TabIndex = 4;
@@ -197,7 +220,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(23, 22);
+            this.label1.Location = new System.Drawing.Point(15, 29);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(29, 13);
             this.label1.TabIndex = 2;
@@ -212,47 +235,30 @@
             this.groupBox2.Controls.Add(this.rbShort);
             this.groupBox2.Location = new System.Drawing.Point(160, 45);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(136, 123);
+            this.groupBox2.Size = new System.Drawing.Size(136, 179);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Sampling Time";
             // 
             // nudSamples
             // 
-            this.nudSamples.Location = new System.Drawing.Point(77, 96);
-            this.nudSamples.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.nudSamples.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.nudSamples.Location = new System.Drawing.Point(73, 106);
             this.nudSamples.Name = "nudSamples";
-            this.nudSamples.Size = new System.Drawing.Size(53, 20);
-            this.nudSamples.TabIndex = 12;
-            this.nudSamples.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
+            this.nudSamples.Size = new System.Drawing.Size(57, 20);
+            this.nudSamples.TabIndex = 0;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 98);
+            this.label5.Location = new System.Drawing.Point(6, 106);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "N. samples";
+            this.label5.Size = new System.Drawing.Size(66, 21);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "N. Samples";
             // 
             // rbLong
             // 
             this.rbLong.AutoSize = true;
-            this.rbLong.Location = new System.Drawing.Point(25, 72);
+            this.rbLong.Location = new System.Drawing.Point(10, 65);
             this.rbLong.Name = "rbLong";
             this.rbLong.Size = new System.Drawing.Size(49, 17);
             this.rbLong.TabIndex = 11;
@@ -262,7 +268,7 @@
             // rbMedium
             // 
             this.rbMedium.AutoSize = true;
-            this.rbMedium.Location = new System.Drawing.Point(25, 48);
+            this.rbMedium.Location = new System.Drawing.Point(10, 42);
             this.rbMedium.Name = "rbMedium";
             this.rbMedium.Size = new System.Drawing.Size(62, 17);
             this.rbMedium.TabIndex = 10;
@@ -273,7 +279,7 @@
             // 
             this.rbShort.AutoSize = true;
             this.rbShort.Checked = true;
-            this.rbShort.Location = new System.Drawing.Point(25, 22);
+            this.rbShort.Location = new System.Drawing.Point(9, 19);
             this.rbShort.Name = "rbShort";
             this.rbShort.Size = new System.Drawing.Size(50, 17);
             this.rbShort.TabIndex = 9;
@@ -283,7 +289,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(311, 265);
+            this.btnStart.Location = new System.Drawing.Point(335, 321);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(81, 44);
             this.btnStart.TabIndex = 4;
@@ -295,9 +301,9 @@
             // 
             this.tbDevice.Location = new System.Drawing.Point(82, 12);
             this.tbDevice.Name = "tbDevice";
-            this.tbDevice.Size = new System.Drawing.Size(310, 20);
+            this.tbDevice.Size = new System.Drawing.Size(340, 20);
             this.tbDevice.TabIndex = 5;
-            this.tbDevice.Text = "USB0::0x2A8D::0x2F01::MY46620088::0::INSTR";
+            this.tbDevice.Text = "TCPIP0::192.168.3.106::inst0::INSTR";
             // 
             // label4
             // 
@@ -314,15 +320,15 @@
             this.tbFlist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbFlist.Location = new System.Drawing.Point(3, 16);
             this.tbFlist.Name = "tbFlist";
-            this.tbFlist.Size = new System.Drawing.Size(374, 20);
+            this.tbFlist.Size = new System.Drawing.Size(404, 20);
             this.tbFlist.TabIndex = 7;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.tbFlist);
-            this.groupBox3.Location = new System.Drawing.Point(12, 174);
+            this.groupBox3.Location = new System.Drawing.Point(12, 230);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(380, 40);
+            this.groupBox3.Size = new System.Drawing.Size(410, 40);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Frequency List";
@@ -330,9 +336,9 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.tbFilename);
-            this.groupBox4.Location = new System.Drawing.Point(12, 265);
+            this.groupBox4.Location = new System.Drawing.Point(12, 321);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(293, 40);
+            this.groupBox4.Size = new System.Drawing.Size(317, 40);
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Filename";
@@ -342,16 +348,16 @@
             this.tbFilename.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbFilename.Location = new System.Drawing.Point(3, 16);
             this.tbFilename.Name = "tbFilename";
-            this.tbFilename.Size = new System.Drawing.Size(287, 20);
+            this.tbFilename.Size = new System.Drawing.Size(311, 20);
             this.tbFilename.TabIndex = 7;
             this.tbFilename.Text = "Measurement";
             // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.tbFilePath);
-            this.groupBox5.Location = new System.Drawing.Point(12, 220);
+            this.groupBox5.Location = new System.Drawing.Point(12, 276);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(293, 40);
+            this.groupBox5.Size = new System.Drawing.Size(317, 40);
             this.groupBox5.TabIndex = 10;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Path";
@@ -361,12 +367,12 @@
             this.tbFilePath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbFilePath.Location = new System.Drawing.Point(3, 16);
             this.tbFilePath.Name = "tbFilePath";
-            this.tbFilePath.Size = new System.Drawing.Size(287, 20);
+            this.tbFilePath.Size = new System.Drawing.Size(311, 20);
             this.tbFilePath.TabIndex = 7;
             // 
             // btnPath
             // 
-            this.btnPath.Location = new System.Drawing.Point(311, 233);
+            this.btnPath.Location = new System.Drawing.Point(335, 289);
             this.btnPath.Name = "btnPath";
             this.btnPath.Size = new System.Drawing.Size(81, 23);
             this.btnPath.TabIndex = 11;
@@ -374,11 +380,63 @@
             this.btnPath.UseVisualStyleBackColor = true;
             this.btnPath.Click += new System.EventHandler(this.btnPath_Click);
             // 
+            // cmbSerialPorts
+            // 
+            this.cmbSerialPorts.FormattingEnabled = true;
+            this.cmbSerialPorts.Location = new System.Drawing.Point(6, 29);
+            this.cmbSerialPorts.Name = "cmbSerialPorts";
+            this.cmbSerialPorts.Size = new System.Drawing.Size(108, 21);
+            this.cmbSerialPorts.TabIndex = 12;
+            // 
+            // btnOp
+            // 
+            this.btnOp.Location = new System.Drawing.Point(6, 77);
+            this.btnOp.Name = "btnOp";
+            this.btnOp.Size = new System.Drawing.Size(63, 23);
+            this.btnOp.TabIndex = 13;
+            this.btnOp.Text = "Open";
+            this.btnOp.UseVisualStyleBackColor = true;
+            this.btnOp.Click += new System.EventHandler(this.btnOp_Click);
+            // 
+            // btnCalib
+            // 
+            this.btnCalib.Location = new System.Drawing.Point(6, 106);
+            this.btnCalib.Name = "btnCalib";
+            this.btnCalib.Size = new System.Drawing.Size(64, 23);
+            this.btnCalib.TabIndex = 14;
+            this.btnCalib.Text = "Start";
+            this.btnCalib.UseVisualStyleBackColor = true;
+            this.btnCalib.Click += new System.EventHandler(this.btnCalib_Click);
+            // 
+            // cbCalib
+            // 
+            this.cbCalib.AutoSize = true;
+            this.cbCalib.Location = new System.Drawing.Point(6, 55);
+            this.cbCalib.Name = "cbCalib";
+            this.cbCalib.Size = new System.Drawing.Size(48, 17);
+            this.cbCalib.TabIndex = 15;
+            this.cbCalib.Text = "calib";
+            this.cbCalib.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.cmbSerialPorts);
+            this.groupBox6.Controls.Add(this.cbCalib);
+            this.groupBox6.Controls.Add(this.btnOp);
+            this.groupBox6.Controls.Add(this.btnCalib);
+            this.groupBox6.Location = new System.Drawing.Point(302, 45);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(120, 179);
+            this.groupBox6.TabIndex = 16;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "RC Calibrator";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(411, 488);
+            this.ClientSize = new System.Drawing.Size(430, 537);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.btnPath);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -395,6 +453,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "E4980A LCR Meter";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudN)).EndInit();
@@ -409,6 +468,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -442,6 +503,12 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.TextBox tbFilePath;
         private System.Windows.Forms.Button btnPath;
+        private System.Windows.Forms.ComboBox cmbSerialPorts;
+        private System.Windows.Forms.Button btnOp;
+        private System.Windows.Forms.Button btnCalib;
+        private System.Windows.Forms.CheckBox cbCalib;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.RadioButton rbManual;
     }
 }
 

@@ -15,11 +15,16 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using System.Globalization;
+using System.IO.Ports;
 
 namespace E4980A
 {
     public partial class Form1 : Form
     {
+        SerialPort serialPort;
+        byte[] msgAllON = new byte[10] { 0xAA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55 };
+        byte[] msgAllOFF = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
+
         void measThread()
         {
             try
@@ -42,23 +47,24 @@ namespace E4980A
                 session.FormattedIO.WriteLine("RST;*CLS");
                 //session.FormattedIO.WriteLine("DISP:ENAB OFF");
                 session.FormattedIO.WriteLine("TRIG:SOUR BUS");
+                //session.FormattedIO.WriteLine("AMP:ALC 1"); // Automatic signal level control
                 session.FormattedIO.WriteLine("DISP:PAGE LIST");
 
                 /// Sampling time
-                if(rbLong.Checked)
+                if (rbLong.Checked)
                     session.FormattedIO.WriteLine("APER LONG,1");
-                else if(rbMedium.Checked)
+                else if (rbMedium.Checked)
                     session.FormattedIO.WriteLine("APER MED,1");
                 else
                     session.FormattedIO.WriteLine("APER SHORT,1");
-                
+
 
                 session.FormattedIO.WriteLine("LIST:CLE:ALL");
 
                 /// Data format
-                //session.FormattedIO.WriteLine("FUNC:IMP CPRP");
-                session.FormattedIO.WriteLine("FUNC:IMP RX");
-                //session.FormattedIO.WriteLine("FUNC:IMP ZTD");
+                session.FormattedIO.WriteLine("FUNC:IMP CPRP");
+                //session.FormattedIO.WriteLine("FUNC:IMP RX");
+                // session.FormattedIO.WriteLine("FUNC:IMP ZTD");
 
                 //session.FormattedIO.WriteLine("FORM REAL,64");
                 session.FormattedIO.WriteLine("FORM ASC");
@@ -73,15 +79,27 @@ namespace E4980A
 
                 var frq = frequencyList.Split(',');
                 string header = "timestamp, ";
+                if (cbCalib.Checked)
+                    header = header + "R, C, ";
+
                 for (int i = 0; i < frq.Count(); i++)
                 {
-                    header += frq[i].Trim() + " R, ";
-                    header += frq[i].Trim() + " X, ";
-                    header += frq[i].Trim() + " mag, ";
-                    header += frq[i].Trim() + " ph, ";
+                    header += frq[i].Trim() + " Cp, ";
+                    header += frq[i].Trim() + " Rp, ";
                 }
                 header = header.TrimEnd();
                 header = header.TrimEnd(',');
+
+
+
+                byte[] msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
+                UInt32 R = 0;
+                UInt32 C = 0;
+
+                if (cbCalib.Checked)
+                    serialPort.Write(msg, 0, 10);
+
+                Thread.Sleep(200);
 
                 session.FormattedIO.WriteLine("LIST:FREQ " + frequencyList);
                 session.FormattedIO.WriteLine("INIT:CONT ON");
@@ -93,13 +111,18 @@ namespace E4980A
 
                 char[] ans;
 
+                bool preexistingFile = File.Exists(tbFilePath.Text + "\\" + tbFilename.Text + ".csv");
+
                 /// Write to local file
                 using (StreamWriter writer = new StreamWriter(tbFilePath.Text + "\\" + tbFilename.Text + ".csv", true))
                 {
+                    writer.AutoFlush = true;
+
                     /// Continuos measurement/TRIG
                     for (int i = 0; i < nudSamples.Value; i++)
                     {
                         timer.Restart();
+                        Thread.Sleep(200);
                         DateTime foo = DateTime.Now;
                         long unixTime = ((DateTimeOffset)foo).ToUnixTimeMilliseconds();
                         session.FormattedIO.WriteLine("*TRG");
@@ -111,15 +134,16 @@ namespace E4980A
                         string time = "Time taken: " + timeTaken.ToString(@"m\:ss\.ffffff");
                         string s = new string(ans);
                         s = s.Replace(",+0,+0", "");
+                        s = s.Replace(",+1,+0", "");
 
-
-                        if (firstLine)
+                        if (firstLine && (!preexistingFile))
                         {
                             string fs = "timestamp, ";
+                            if (cbCalib.Checked)
+                                fs = "timestamp, R, C,";
+
                             foreach (var f in frq)
                             {
-                                fs += f.ToString() + ", ";
-                                fs += f.ToString() + ", ";
                                 fs += f.ToString() + ", ";
                                 fs += f.ToString() + ", ";
                             }
@@ -136,22 +160,53 @@ namespace E4980A
                         List<double> result = splitResult.Select(x => double.Parse(x)).ToList();
                         for (int j = 0; j < frq.Length; j++)
                         {
-                            double R = result[j * 2];
-                            double X = result[j * 2 + 1];
-                            double mag = Math.Sqrt(Math.Pow(R, 2) + Math.Pow(X, 2));
-                            double ph = (180 / Math.PI) * Math.Atan2(X, R);
-                            sline += R.ToString() + ", " + X.ToString() + ", " + mag.ToString() + ", " + ph.ToString() + ", ";
+                            double mag = result[j * 2];
+                            double ph = result[j * 2 + 1];
+                            sline += mag.ToString() + ", " + ph.ToString() + ", ";
                         }
 
                         sline = sline.Trim().TrimEnd(',');
 
-                        writer.WriteLine(unixTime.ToString() + ", " + sline);
 
+
+                        if (cbCalib.Checked)
+                        {
+                            writer.WriteLine(unixTime.ToString() + ", " + R.ToString() + ", " + C.ToString() + ", " + sline);
+                            writer.Flush();
+                        }
+                        else
+                        {
+                            writer.WriteLine(unixTime.ToString() + ", " + sline);
+                            writer.Flush();
+                        }
+
+                        if (cbCalib.Checked)
+                        {
+                            R = (UInt32)Math.Pow(2, i);
+
+                            msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
+
+                            msg[1] = ((byte)~(R >> 8));
+                            msg[2] = ((byte)~(R >> 0));
+                            msg[3] = ((byte)~(R >> 24));
+                            msg[4] = ((byte)~(R >> 16));
+
+                            BeginInvoke(new Action(() =>
+                            {
+                                Thread.Sleep(500);
+                                serialPort.Write(msg, 0, 10);
+                                richTextBox1.Text += BitConverter.ToString(msg).Replace("-", "") + "\n";
+                            }));
+
+
+                        }
 
                         /// Print in textbox
                         BeginInvoke(new Action(() =>
                         {
                             richTextBox1.Text += DateTime.Now.ToString() + " - Measurement number " + i.ToString() + "\r\n" + time + "\r\n" + unixTime.ToString() + ", " + s + "\r\n";
+
+
                         }));
                         Console.WriteLine(time);
                     }
@@ -203,7 +258,7 @@ namespace E4980A
                     richTextBox1.Text += "Measurement finished!\r\n";
                 }));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 BeginInvoke(new Action(() =>
@@ -263,7 +318,7 @@ namespace E4980A
         {
             if (rbLog.Checked)
                 tbFlist.Text = string.Join(", ", logspace(Convert.ToDouble(nudStart.Value), Convert.ToDouble(nudEnd.Value), Convert.ToInt16(nudN.Value)));
-            else
+            else if (rbLinear.Checked)
                 tbFlist.Text = string.Join(", ", linspace(Convert.ToDouble(nudStart.Value), Convert.ToDouble(nudEnd.Value), Convert.ToInt16(nudN.Value)));
         }
 
@@ -277,7 +332,7 @@ namespace E4980A
             Properties.Settings.Default["SamplingTime"] = (int)(rbShort.Checked ? 0 : rbMedium.Checked ? 1 : 2);
             Properties.Settings.Default["NSamples"] = (int)nudSamples.Value;
             Properties.Settings.Default["Filename"] = tbFilename.Text;
-            if(Directory.Exists(tbFilePath.Text))
+            if (Directory.Exists(tbFilePath.Text))
                 Properties.Settings.Default["Path"] = tbFilePath.Text;
             Properties.Settings.Default.Save();
         }
@@ -295,8 +350,8 @@ namespace E4980A
             rbLong.Checked = (int)Properties.Settings.Default["SamplingTime"] == 2;
             nudSamples.Value = (int)Properties.Settings.Default["NSamples"];
             tbFilename.Text = (string)Properties.Settings.Default["Filename"];
-            
-            if(Directory.Exists((string)Properties.Settings.Default["Path"]))
+
+            if (Directory.Exists((string)Properties.Settings.Default["Path"]))
             {
                 tbFilePath.Text = (string)Properties.Settings.Default["Path"];
             }
@@ -304,7 +359,7 @@ namespace E4980A
             {
                 tbFilePath.Text = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             }
-        
+
         }
 
         public Form1()
@@ -375,6 +430,50 @@ namespace E4980A
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 tbFilePath.Text = dialog.FileName;
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var ports = SerialPort.GetPortNames();
+            cmbSerialPorts.DataSource = ports;
+
+        }
+
+        private void btnOp_Click(object sender, EventArgs e)
+        {
+            serialPort = new SerialPort(cmbSerialPorts.SelectedItem.ToString());
+            if (!serialPort.IsOpen)
+            {
+                serialPort.BaudRate = 115200;
+                serialPort.Open();
+
+                serialPort.Write(msgAllON, 0, 10);
+            }
+        }
+
+        private void btnCalib_Click(object sender, EventArgs e)
+        {
+            byte[] msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
+            UInt16 R = 0;
+            UInt16 C = 0;
+
+            for (UInt16 i = 0; i < 16; i++)
+            {
+                if (R == 0)
+                    R = 1;
+                else
+                    R *= 2;
+
+                msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
+
+                msg[1] = ((byte)~(R >> 8));
+                msg[2] = ((byte)~(R >> 0));
+
+                serialPort.Write(msg, 0, 10);
+
+                richTextBox1.Text += BitConverter.ToString(msg).Replace("-", "") + "\n";
+                Thread.Sleep(1250);
             }
         }
     }
