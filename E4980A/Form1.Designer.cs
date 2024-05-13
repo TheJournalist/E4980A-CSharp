@@ -117,7 +117,7 @@
             // 
             this.nudN.Location = new System.Drawing.Point(70, 78);
             this.nudN.Minimum = new decimal(new int[] {
-            2,
+            1,
             0,
             0,
             0});
@@ -243,6 +243,11 @@
             // nudSamples
             // 
             this.nudSamples.Location = new System.Drawing.Point(73, 106);
+            this.nudSamples.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
             this.nudSamples.Name = "nudSamples";
             this.nudSamples.Size = new System.Drawing.Size(57, 20);
             this.nudSamples.TabIndex = 0;

@@ -16,6 +16,9 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using System.Globalization;
 using System.IO.Ports;
+using System.Resources;
+using System.Reflection;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace E4980A
 {
@@ -25,10 +28,55 @@ namespace E4980A
         byte[] msgAllON = new byte[10] { 0xAA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55 };
         byte[] msgAllOFF = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
 
+        /*
+        ushort[] calibValues = new ushort[] {   0xFFFF, 0xFFFD, 0xFFFB, 0xFFF7, 0xFFFA, 0xFFEF, 0xFFDF, 0xFFBF,
+                                                0xFFEE, 0xFFDE, 0xFFED, 0xFF7E, 0xFFD7, 0xFFCF, 0xFF77, 0xFF6F,
+                                                0xFF6E, 0xFF6D, 0xFF3B, 0xFF2F, 0xFF1E, 0xFF1B, 0xFF45, 0xFF0B,
+                                                0xFF09, 0xFF02, 0xFE7E, 0xFE7A, 0xFE3D, 0xFE1E, 0xFE0E, 0xFE10,
+                                                0xFD7B, 0xFDD7, 0xFD3B, 0xFD16, 0xFBFD, 0xFB7A, 0xFB1B, 0xFAEE,
+                                                0xF72D, 0xF67E, 0xF6FB, 0xF8FB, 0xF4FB, 0xF327, 0xF24E,             // 0xFEED, 0xF72D, 0xF67E, 0xF6FB, 0xF8FB, 0xF4FB, 0xF327, 0xF24E,
+                                                0xEF2F, 0xEE1E, 0xED39, 0xEB45, 0xE9FB, 0xE81F, 0xE319, 0xE167,
+                                                0xDF0F, 0xDD13, 0xD9EF, 0xD36F, 0xBF3F, 0xBB3E, 0xB5C5, 0xAEC6,
+                                                0xA6BB, 0xA11E, 0x66FD, 0x5F0D, 0x530F, 0x361A, 0x2677, 0x1AE7,
+                                                0x063F }; */
+
+        ushort[] calibValues = new ushort[] {
+            0xFFFF, 0x7FFF, 0x3FFF, 0x1FFF, 0x0FFF,
+            0x07FF, 0x03FF, 0x01FF, 0x00FF,
+            0x007F, 0x003F, 0x001F, 0x000F,
+            0x0007, 0x0003, 0x0001, 0x0000
+        };
+        ushort calibValuesIndex = 0;
+
+
+
+        public Dictionary<string, double> LoadCapacitancesFromResource()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "E4980A.CapacitorCombinations.csv";
+            var capacitances = new Dictionary<string, double>();
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] parts = line.Split(',');
+                    capacitances[parts[0]] = double.Parse(parts[1]);
+                }
+            }
+
+            return capacitances;
+        }
+
         void measThread()
         {
             try
             {
+                Dictionary<string, double> capacitances = LoadCapacitancesFromResource(); // calibrator
+
+
                 var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open(tbDevice.Text);
                 //var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("USB0::0x0957::0x0909::MY46204796::0::INSTR");
                 //var session = (Ivi.Visa.IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open("TCPIP0::10.12.2.93::inst0::INSTR");
@@ -80,7 +128,7 @@ namespace E4980A
                 var frq = frequencyList.Split(',');
                 string header = "timestamp, ";
                 if (cbCalib.Checked)
-                    header = header + "R, C, ";
+                    header = header + "C, ";
 
                 for (int i = 0; i < frq.Count(); i++)
                 {
@@ -89,17 +137,6 @@ namespace E4980A
                 }
                 header = header.TrimEnd();
                 header = header.TrimEnd(',');
-
-
-
-                byte[] msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
-                UInt32 R = 0;
-                UInt32 C = 0;
-
-                if (cbCalib.Checked)
-                    serialPort.Write(msg, 0, 10);
-
-                Thread.Sleep(200);
 
                 session.FormattedIO.WriteLine("LIST:FREQ " + frequencyList);
                 session.FormattedIO.WriteLine("INIT:CONT ON");
@@ -121,6 +158,21 @@ namespace E4980A
                     /// Continuos measurement/TRIG
                     for (int i = 0; i < nudSamples.Value; i++)
                     {
+
+                        if (cbCalib.Checked)
+                        {
+                            BeginInvoke(new Action(() =>
+                            {
+                                serialPort.WriteLine(calibValues[calibValuesIndex].ToString("X4"));
+                                Thread.Sleep(100);
+                                serialPort.WriteLine(calibValues[calibValuesIndex].ToString("X4"));
+                                richTextBox1.Text += "Calibrator: " + calibValues[calibValuesIndex].ToString("X4") + " - " + capacitances[calibValues[calibValuesIndex].ToString("X4")].ToString() + "pF \n";
+                            }));
+
+                            Thread.Sleep(500);
+                        }
+
+
                         timer.Restart();
                         Thread.Sleep(200);
                         DateTime foo = DateTime.Now;
@@ -140,7 +192,7 @@ namespace E4980A
                         {
                             string fs = "timestamp, ";
                             if (cbCalib.Checked)
-                                fs = "timestamp, R, C,";
+                                fs = "timestamp, C,";
 
                             foreach (var f in frq)
                             {
@@ -171,8 +223,15 @@ namespace E4980A
 
                         if (cbCalib.Checked)
                         {
-                            writer.WriteLine(unixTime.ToString() + ", " + R.ToString() + ", " + C.ToString() + ", " + sline);
+                            writer.WriteLine(unixTime.ToString() + ", " + capacitances[calibValues[calibValuesIndex].ToString("X4")].ToString() + ", " + sline);
                             writer.Flush();
+
+                            calibValuesIndex++;
+
+                            if(calibValuesIndex > calibValues.Length - 1)
+                            {
+                                calibValuesIndex = 0;
+                            }
                         }
                         else
                         {
@@ -180,26 +239,7 @@ namespace E4980A
                             writer.Flush();
                         }
 
-                        if (cbCalib.Checked)
-                        {
-                            R = (UInt32)Math.Pow(2, i);
 
-                            msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
-
-                            msg[1] = ((byte)~(R >> 8));
-                            msg[2] = ((byte)~(R >> 0));
-                            msg[3] = ((byte)~(R >> 24));
-                            msg[4] = ((byte)~(R >> 16));
-
-                            BeginInvoke(new Action(() =>
-                            {
-                                Thread.Sleep(500);
-                                serialPort.Write(msg, 0, 10);
-                                richTextBox1.Text += BitConverter.ToString(msg).Replace("-", "") + "\n";
-                            }));
-
-
-                        }
 
                         /// Print in textbox
                         BeginInvoke(new Action(() =>
@@ -271,9 +311,16 @@ namespace E4980A
 
         public IEnumerable<double> logspace(double start, double end, int count)
         {
-            double d = (double)(count - 1), p = Math.Pow(end / start, 1 / d);
-            var list = Enumerable.Range(0, count).Select(i => start * Math.Pow(p, i));
-            return list.Select(n => Math.Round(n, 3, MidpointRounding.AwayFromZero));
+            if (count == 1)
+            {
+                return new List<double>(){end};
+            }
+            else
+            {
+                double d = (double)(count - 1), p = Math.Pow(end / start, 1 / d);
+                var list = Enumerable.Range(0, count).Select(i => start * Math.Pow(p, i));
+                return list.Select(n => Math.Round(n, 3, MidpointRounding.AwayFromZero));
+            }
         }
 
         public static IEnumerable<double> Arange(double start, int count)
@@ -395,6 +442,8 @@ namespace E4980A
 
         private void btnStart_Click(object sender, EventArgs e)
         {
+            calibValuesIndex = 0;
+
             if (Directory.Exists(tbFilePath.Text))
             {
                 if (tbFilename.Text == "")
@@ -452,8 +501,28 @@ namespace E4980A
             }
         }
 
+        public string FindClosestCapacitance(double target)
+        {
+            Dictionary<string, double> capacitances = LoadCapacitancesFromResource();
+            string closestHex = null;
+            double closestDiff = double.MaxValue;
+
+            foreach (var pair in capacitances)
+            {
+                double diff = Math.Abs(pair.Value - target);
+                if (diff < closestDiff)
+                {
+                    closestDiff = diff;
+                    closestHex = pair.Key;
+                }
+            }
+
+            return closestHex;
+        }
+
         private void btnCalib_Click(object sender, EventArgs e)
         {
+            /*
             byte[] msg = new byte[10] { 0xAA, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x55 };
             UInt16 R = 0;
             UInt16 C = 0;
@@ -475,6 +544,28 @@ namespace E4980A
                 richTextBox1.Text += BitConverter.ToString(msg).Replace("-", "") + "\n";
                 Thread.Sleep(1250);
             }
+            */
+
+            // Cap Values: 0.5, 1, 1.2, 1.5, 1.8, 2, 2.2, 2.7, 10, 22, 33, 47, 100, 220, 330, 560
+
+            ushort[] calibValues = new ushort[] { 0x0000, 0x0002, 0x0004, 0x0008, 0x0005, 0x0010, 0x0020, 0x0040, 0x0011, 0x0021, 0x0012, 0x0081, 0x0028, 0x0030, 0x0088, 0x0090, 0x0091, 0x0092, 0x00c4, 0x00d0, 0x00e1, 0x00e4, 0x00ba, 0x00f4, 0x00f6, 0x00fd, 0x0181, 0x0185, 0x01c2, 0x01e1, 0x01f1, 0x01ef, 0x0204, 0x0228, 0x02c4, 0x02e9, 0x0402, 0x0485, 0x04e4, 0x0511, 0x0812, 0x08d2, 0x0981, 0x0704, 0x0a84, 0x0b04, 0x0cd8, 0x0db1, 0x10d0, 0x11e1, 0x12c6, 0x14ba, 0x1604, 0x17e0, 0x1ce6, 0x1e98, 0x20f0, 0x22ec, 0x2610, 0x2c90, 0x40c0, 0x44c1, 0x4a3a, 0x5139, 0x5944, 0x5ee1, 0x9902, 0xa0f2, 0xacf0, 0xc9e5, 0xd988, 0xe518, 0xf9c0 };
+
+            foreach (var cap in calibValues)
+            {
+                serialPort.WriteLine(cap.ToString("X4"));
+                Thread.Sleep(1000);
+            }
+
+            /*
+            List<double> caps = new List<double>(logspace(1, 1200, 50));
+            foreach (var cap in caps)
+            {
+                string capval = FindClosestCapacitance(cap);
+                serialPort.WriteLine(capval);
+                Thread.Sleep(1000);
+            }         
+            */
+
         }
     }
 }
